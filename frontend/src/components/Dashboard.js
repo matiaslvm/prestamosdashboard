@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import './Dashboard.css';
@@ -17,11 +17,7 @@ function Dashboard() {
   const [prestamos, setPrestamos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const headers = getAuthHeaders();
       const [statsRes, prestamosRes] = await Promise.all([
@@ -39,7 +35,11 @@ function Dashboard() {
       console.error('Error cargando datos:', error);
       setLoading(false);
     }
-  };
+  }, [getAuthHeaders]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('es-AR', {

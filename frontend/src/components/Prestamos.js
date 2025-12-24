@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import PrestamoForm from './PrestamoForm';
 import AuthContext from '../context/AuthContext';
 import './Prestamos.css';
@@ -18,11 +18,7 @@ function Prestamos() {
   const [sortBy, setSortBy] = useState('fecha_prestamo');
   const [sortOrder, setSortOrder] = useState('desc');
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const headers = getAuthHeaders();
       const [prestamosRes, clientesRes] = await Promise.all([
@@ -40,7 +36,11 @@ function Prestamos() {
       console.error('Error cargando datos:', error);
       setLoading(false);
     }
-  };
+  }, [getAuthHeaders]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const handleCreate = () => {
     if (clientes.length === 0) {

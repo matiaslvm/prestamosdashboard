@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 
 const AuthContext = createContext();
 
@@ -8,17 +8,7 @@ export function AuthProvider({ children }) {
 
   const API_URL = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api');
 
-  useEffect(() => {
-    // Verificar si hay un token guardado
-    const token = localStorage.getItem('token');
-    if (token) {
-      verifyToken(token);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  const verifyToken = async (token) => {
+  const verifyToken = useCallback(async (token) => {
     try {
       const response = await fetch(`${API_URL}/auth/verify`, {
         headers: {
@@ -41,7 +31,17 @@ export function AuthProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL]);
+
+  useEffect(() => {
+    // Verificar si hay un token guardado
+    const token = localStorage.getItem('token');
+    if (token) {
+      verifyToken(token);
+    } else {
+      setLoading(false);
+    }
+  }, [verifyToken]);
 
   const login = async (username, password) => {
     try {

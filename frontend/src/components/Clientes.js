@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import ClienteForm from './ClienteForm';
 import AuthContext from '../context/AuthContext';
 import './Clientes.css';
@@ -13,11 +13,7 @@ function Clientes() {
   const [editingCliente, setEditingCliente] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    loadClientes();
-  }, []);
-
-  const loadClientes = async () => {
+  const loadClientes = useCallback(async () => {
     try {
       const headers = getAuthHeaders();
       const response = await fetch(`${API_URL}/clientes`, { headers });
@@ -28,7 +24,11 @@ function Clientes() {
       console.error('Error cargando clientes:', error);
       setLoading(false);
     }
-  };
+  }, [getAuthHeaders]);
+
+  useEffect(() => {
+    loadClientes();
+  }, [loadClientes]);
 
   const handleCreate = () => {
     setEditingCliente(null);
