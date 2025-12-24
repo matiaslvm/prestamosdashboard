@@ -1,33 +1,5 @@
 {
-  "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/build",
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "@vercel/node"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/clientes",
-      "destination": "/api/clientes.js"
-    },
-    {
-      "source": "/api/clientes/:id",
-      "destination": "/api/clientes/[id].js"
-    },
-    {
-      "source": "/api/prestamos/stats",
-      "destination": "/api/prestamos/stats.js"
-    },
-    {
-      "source": "/api/prestamos/:id",
-      "destination": "/api/prestamos/[id].js"
-    },
-    {
-      "source": "/api/prestamos",
-      "destination": "/api/prestamos.js"
-    }
-  ]
+  "installCommand": "npm install && cd frontend && npm install"
 }
-
