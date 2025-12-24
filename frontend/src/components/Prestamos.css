@@ -1,0 +1,56 @@
+.prestamo-row {
+  transition: background-color 0.2s ease;
+}
+
+.prestamo-row:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.prestamo-pagado {
+  background-color: #f1f8f4;
+}
+
+.prestamo-vencido {
+  background-color: #ffebee;
+}
+
+.prestamo-por-vencer {
+  background-color: #fff3e0;
+}
+
+.cliente-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cliente-cell strong {
+  font-weight: 600;
+}
+
+.cliente-cell small {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    font-size: 0.875rem;
+  }
+
+  table th,
+  table td {
+    padding: 0.5rem;
+  }
+
+  .table-actions {
+    flex-direction: column;
+  }
+}
+

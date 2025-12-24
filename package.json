@@ -1,0 +1,14 @@
+{
+  "name": "prestamos-app",
+  "version": "1.0.0",
+  "description": "Sistema de gestión de préstamos - Full Stack",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
