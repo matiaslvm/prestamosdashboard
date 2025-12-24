@@ -67,18 +67,6 @@
   margin-top: 0.5rem;
 }
 
-.login-footer {
-  margin-top: 1.5rem;
-  text-align: center;
-  padding-top: 1.5rem;
-  border-top: 1px solid #eee;
-}
-
-.login-footer small {
-  color: #999;
-  font-size: 0.85rem;
-}
-
 @media (max-width: 480px) {
   .login-card {
     padding: 2rem 1.5rem;

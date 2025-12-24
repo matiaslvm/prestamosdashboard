@@ -1,4 +1,4 @@
-const { dbGet } = require('./db');
+const { dbGet } = require('../db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -25,7 +25,7 @@ async function handler(req, res) {
       }
 
       // Buscar usuario en la base de datos
-      const supabase = require('./db').getSupabase();
+      const supabase = require('../db').getSupabase();
       const { data: usuario, error } = await supabase
         .from('usuarios')
         .select('*')

@@ -75,10 +75,6 @@ function Login() {
             {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
-
-        <div className="login-footer">
-          <small>Credenciales por defecto: admin / admin123</small>
-        </div>
       </div>
     </div>
   );
