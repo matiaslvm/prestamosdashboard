@@ -29,7 +29,47 @@ function Prestamos() {
       const prestamosData = await prestamosRes.json();
       const clientesData = await clientesRes.json();
 
-      setPrestamos(prestamosData);
+      // Calcular días hasta vencimiento y generar texto
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      const en7Dias = new Date();
+      en7Dias.setDate(en7Dias.getDate() + 7);
+      en7Dias.setHours(0, 0, 0, 0);
+
+      const prestamosActualizados = prestamosData.map(p => {
+        const fechaVenc = new Date(p.fecha_vencimiento);
+        fechaVenc.setHours(0, 0, 0, 0);
+        
+        // Calcular días hasta vencimiento
+        const diffTime = fechaVenc - hoy;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        let colorEstado = p.colorEstado || 'pendiente';
+        let diasTexto = '';
+        
+        if (p.estado === 'Pagado') {
+          colorEstado = 'pagado';
+          diasTexto = 'Pagado';
+        } else if (p.estado === 'Vencido') {
+          colorEstado = 'vencido';
+          diasTexto = `Vencido hace ${Math.abs(diffDays)} día${Math.abs(diffDays) !== 1 ? 's' : ''}`;
+        } else if (fechaVenc <= en7Dias && fechaVenc >= hoy) {
+          colorEstado = 'por-vencer';
+          if (diffDays === 0) {
+            diasTexto = 'Vence hoy';
+          } else if (diffDays === 1) {
+            diasTexto = 'Vence mañana';
+          } else {
+            diasTexto = `Vence en ${diffDays} días`;
+          }
+        } else {
+          diasTexto = `Vence en ${diffDays} días`;
+        }
+
+        return { ...p, colorEstado, diasHastaVencimiento: diffDays, diasTexto };
+      });
+
+      setPrestamos(prestamosActualizados);
       setClientes(clientesData);
       setLoading(false);
     } catch (error) {
