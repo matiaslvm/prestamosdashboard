@@ -281,6 +281,7 @@ function Prestamos() {
                     <th>Cliente</th>
                     <th>Fecha Préstamo</th>
                     <th>Vencimiento</th>
+                    <th>Días</th>
                     <th>Monto</th>
                     <th>Interés</th>
                     <th>Total</th>
@@ -299,6 +300,11 @@ function Prestamos() {
                       </td>
                       <td>{formatDate(prestamo.fecha_prestamo)}</td>
                       <td>{formatDate(prestamo.fecha_vencimiento)}</td>
+                      <td>
+                        <span className={`dias-badge dias-${prestamo.colorEstado}`}>
+                          {prestamo.diasTexto}
+                        </span>
+                      </td>
                       <td>{formatCurrency(prestamo.monto_prestado)}</td>
                       <td>{prestamo.porcentaje_interes}%</td>
                       <td><strong>{formatCurrency(prestamo.monto_total)}</strong></td>
@@ -354,12 +360,18 @@ function Prestamos() {
                 </div>
 
                 <div className="prestamo-mobile-body">
+                  <div className="prestamo-mobile-row prestamo-mobile-dias">
+                    <span className="prestamo-mobile-label">⏰</span>
+                    <span className={`dias-badge-mobile dias-${prestamo.colorEstado}`}>
+                      {prestamo.diasTexto}
+                    </span>
+                  </div>
                   <div className="prestamo-mobile-row">
                     <span className="prestamo-mobile-label">Monto:</span>
                     <span className="prestamo-mobile-value">{formatCurrency(prestamo.monto_prestado)}</span>
                   </div>
                   <div className="prestamo-mobile-row">
-                    <span className="prestamo-mobile-label">Total:</span>
+                    <span className="prestamo-mobile-label">Total a Cobrar:</span>
                     <span className="prestamo-mobile-value prestamo-mobile-total">
                       {formatCurrency(prestamo.monto_total)}
                     </span>
@@ -369,7 +381,7 @@ function Prestamos() {
                     <span className="prestamo-mobile-value">{prestamo.porcentaje_interes}%</span>
                   </div>
                   <div className="prestamo-mobile-row">
-                    <span className="prestamo-mobile-label">Vencimiento:</span>
+                    <span className="prestamo-mobile-label">📅 Vence:</span>
                     <span className="prestamo-mobile-value">{formatDate(prestamo.fecha_vencimiento)}</span>
                   </div>
                 </div>

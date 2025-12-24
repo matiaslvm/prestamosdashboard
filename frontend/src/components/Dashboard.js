@@ -28,8 +28,48 @@ function Dashboard() {
       const statsData = await statsRes.json();
       const prestamosData = await prestamosRes.json();
 
+      // Calcular días hasta vencimiento y generar texto
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      const en7Dias = new Date();
+      en7Dias.setDate(en7Dias.getDate() + 7);
+      en7Dias.setHours(0, 0, 0, 0);
+
+      const prestamosActualizados = prestamosData.map(p => {
+        const fechaVenc = new Date(p.fecha_vencimiento);
+        fechaVenc.setHours(0, 0, 0, 0);
+        
+        // Calcular días hasta vencimiento
+        const diffTime = fechaVenc - hoy;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        let colorEstado = p.colorEstado || 'pendiente';
+        let diasTexto = '';
+        
+        if (p.estado === 'Pagado') {
+          colorEstado = 'pagado';
+          diasTexto = 'Pagado';
+        } else if (p.estado === 'Vencido') {
+          colorEstado = 'vencido';
+          diasTexto = `Vencido hace ${Math.abs(diffDays)} día${Math.abs(diffDays) !== 1 ? 's' : ''}`;
+        } else if (fechaVenc <= en7Dias && fechaVenc >= hoy) {
+          colorEstado = 'por-vencer';
+          if (diffDays === 0) {
+            diasTexto = 'Vence hoy';
+          } else if (diffDays === 1) {
+            diasTexto = 'Vence mañana';
+          } else {
+            diasTexto = `Vence en ${diffDays} días`;
+          }
+        } else {
+          diasTexto = `Vence en ${diffDays} días`;
+        }
+
+        return { ...p, colorEstado, diasHastaVencimiento: diffDays, diasTexto };
+      });
+
       setStats(statsData);
-      setPrestamos(prestamosData);
+      setPrestamos(prestamosActualizados);
       setLoading(false);
     } catch (error) {
       console.error('Error cargando datos:', error);
@@ -106,6 +146,7 @@ function Dashboard() {
                     <th>Monto</th>
                     <th>Total a Devolver</th>
                     <th>Vencimiento</th>
+                    <th>Días</th>
                     <th>Estado</th>
                   </tr>
                 </thead>
@@ -114,8 +155,13 @@ function Dashboard() {
                     <tr key={prestamo.id}>
                       <td>{prestamo.cliente_nombre}</td>
                       <td>{formatCurrency(prestamo.monto_prestado)}</td>
-                      <td>{formatCurrency(prestamo.monto_total)}</td>
+                      <td><strong>{formatCurrency(prestamo.monto_total)}</strong></td>
                       <td>{new Date(prestamo.fecha_vencimiento).toLocaleDateString('es-AR')}</td>
+                      <td>
+                        <span className={`dias-badge dias-${prestamo.colorEstado}`}>
+                          {prestamo.diasTexto}
+                        </span>
+                      </td>
                       <td>
                         <span className={`badge ${prestamo.colorEstado}`}>
                           {prestamo.estado}
@@ -132,9 +178,14 @@ function Dashboard() {
               {prestamos.slice(0, 10).map(prestamo => (
                 <div key={prestamo.id} className={`dashboard-mobile-card prestamo-${prestamo.colorEstado}`}>
                   <div className="dashboard-mobile-header">
-                    <h3>{prestamo.cliente_nombre}</h3>
-                    <span className={`badge ${prestamo.colorEstado}`}>
-                      {prestamo.estado}
+                    <div>
+                      <h3>{prestamo.cliente_nombre}</h3>
+                      <span className={`badge ${prestamo.colorEstado}`}>
+                        {prestamo.estado}
+                      </span>
+                    </div>
+                    <span className={`dias-badge-mobile dias-${prestamo.colorEstado}`}>
+                      {prestamo.diasTexto}
                     </span>
                   </div>
                   <div className="dashboard-mobile-body">
@@ -143,11 +194,11 @@ function Dashboard() {
                       <strong>{formatCurrency(prestamo.monto_prestado)}</strong>
                     </div>
                     <div className="dashboard-mobile-row">
-                      <span>Total:</span>
+                      <span>Total a Cobrar:</span>
                       <strong className="dashboard-mobile-total">{formatCurrency(prestamo.monto_total)}</strong>
                     </div>
                     <div className="dashboard-mobile-row">
-                      <span>Vence:</span>
+                      <span>📅 Vence:</span>
                       <span>{new Date(prestamo.fecha_vencimiento).toLocaleDateString('es-AR')}</span>
                     </div>
                   </div>
