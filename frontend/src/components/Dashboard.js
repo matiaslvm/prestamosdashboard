@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 import './Dashboard.css';
 
 const API_URL = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api');
 
 function Dashboard() {
+  const { getAuthHeaders } = useContext(AuthContext);
   const [stats, setStats] = useState({
     totalPrestado: 0,
     totalACobrar: 0,
@@ -21,9 +23,10 @@ function Dashboard() {
 
   const loadData = async () => {
     try {
+      const headers = getAuthHeaders();
       const [statsRes, prestamosRes] = await Promise.all([
-        fetch(`${API_URL}/prestamos/stats`),
-        fetch(`${API_URL}/prestamos`)
+        fetch(`${API_URL}/prestamos/stats`, { headers }),
+        fetch(`${API_URL}/prestamos`, { headers })
       ]);
 
       const statsData = await statsRes.json();

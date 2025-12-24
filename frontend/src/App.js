@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import AuthContext from './context/AuthContext';
 import Dashboard from './components/Dashboard';
 import Clientes from './components/Clientes';
 import Prestamos from './components/Prestamos';
+import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
 function Navigation() {
   const location = useLocation();
+  const { user, logout } = useContext(AuthContext);
+  
+  if (!user) return null; // No mostrar navegación si no está logueado
   
   return (
     <nav className="navbar">
@@ -32,6 +39,13 @@ function Navigation() {
             >
               💵 Préstamos
             </Link>
+            <button 
+              onClick={logout}
+              className="nav-link"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white' }}
+            >
+              🚪 Salir
+            </button>
           </div>
         </div>
       </div>
@@ -39,7 +53,7 @@ function Navigation() {
   );
 }
 
-function App() {
+function AppContent() {
   return (
     <Router>
       <div className="App">
@@ -47,14 +61,45 @@ function App() {
         <main className="main-content">
           <div className="container">
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/clientes" element={<Clientes />} />
-              <Route path="/prestamos" element={<Prestamos />} />
+              <Route path="/login" element={<Login />} />
+              <Route 
+                path="/" 
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/clientes" 
+                element={
+                  <ProtectedRoute>
+                    <Clientes />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/prestamos" 
+                element={
+                  <ProtectedRoute>
+                    <Prestamos />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
         </main>
       </div>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

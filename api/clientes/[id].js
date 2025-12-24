@@ -1,14 +1,21 @@
 const { dbGet, dbRun, dbAll } = require('../db');
+const { verifyToken } = require('../middleware/auth');
 
 // GET /api/clientes/:id, PUT /api/clientes/:id, DELETE /api/clientes/:id
 async function handler(req, res) {
   // Configurar CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  // Verificar autenticación
+  const authResult = verifyToken(req);
+  if (!authResult.valid) {
+    return res.status(401).json({ error: authResult.error });
   }
 
   const { id } = req.query;

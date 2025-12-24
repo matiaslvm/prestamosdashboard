@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ClienteForm from './ClienteForm';
+import AuthContext from '../context/AuthContext';
 import './Clientes.css';
 
 const API_URL = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api');
 
 function Clientes() {
+  const { getAuthHeaders } = useContext(AuthContext);
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -17,7 +19,8 @@ function Clientes() {
 
   const loadClientes = async () => {
     try {
-      const response = await fetch(`${API_URL}/clientes`);
+      const headers = getAuthHeaders();
+      const response = await fetch(`${API_URL}/clientes`, { headers });
       const data = await response.json();
       setClientes(data);
       setLoading(false);
@@ -43,8 +46,10 @@ function Clientes() {
     }
 
     try {
+      const headers = getAuthHeaders();
       const response = await fetch(`${API_URL}/clientes/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers
       });
 
       if (response.ok) {
@@ -155,6 +160,7 @@ function Clientes() {
           cliente={editingCliente}
           onClose={handleCloseModal}
           onSave={handleSave}
+          getAuthHeaders={getAuthHeaders}
         />
       )}
     </div>

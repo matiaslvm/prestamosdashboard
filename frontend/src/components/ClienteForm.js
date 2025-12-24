@@ -3,7 +3,7 @@ import './ClienteForm.css';
 
 const API_URL = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api');
 
-function ClienteForm({ cliente, onClose, onSave }) {
+function ClienteForm({ cliente, onClose, onSave, getAuthHeaders }) {
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -47,11 +47,10 @@ function ClienteForm({ cliente, onClose, onSave }) {
       
       const method = cliente ? 'PUT' : 'POST';
 
+      const headers = getAuthHeaders();
       const response = await fetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(formData)
       });
 

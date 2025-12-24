@@ -3,7 +3,7 @@ import './PrestamoForm.css';
 
 const API_URL = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api');
 
-function PrestamoForm({ prestamo, clientes, onClose, onSave }) {
+function PrestamoForm({ prestamo, clientes, onClose, onSave, getAuthHeaders }) {
   const [formData, setFormData] = useState({
     cliente_id: '',
     fecha_prestamo: new Date().toISOString().split('T')[0],
@@ -101,11 +101,10 @@ function PrestamoForm({ prestamo, clientes, onClose, onSave }) {
         estado: formData.estado
       };
 
+      const headers = getAuthHeaders();
       const response = await fetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(payload)
       });
 

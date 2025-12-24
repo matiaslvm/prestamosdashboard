@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PrestamoForm from './PrestamoForm';
+import AuthContext from '../context/AuthContext';
 import './Prestamos.css';
 
 const API_URL = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api');
 
 function Prestamos() {
+  const { getAuthHeaders } = useContext(AuthContext);
   const [prestamos, setPrestamos] = useState([]);
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,9 +24,10 @@ function Prestamos() {
 
   const loadData = async () => {
     try {
+      const headers = getAuthHeaders();
       const [prestamosRes, clientesRes] = await Promise.all([
-        fetch(`${API_URL}/prestamos`),
-        fetch(`${API_URL}/clientes`)
+        fetch(`${API_URL}/prestamos`, { headers }),
+        fetch(`${API_URL}/clientes`, { headers })
       ]);
 
       const prestamosData = await prestamosRes.json();
@@ -59,8 +62,10 @@ function Prestamos() {
     }
 
     try {
+      const headers = getAuthHeaders();
       const response = await fetch(`${API_URL}/prestamos/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers
       });
 
       if (response.ok) {
@@ -89,11 +94,10 @@ function Prestamos() {
     const nuevoEstado = prestamo.estado === 'Pagado' ? 'Pendiente' : 'Pagado';
     
     try {
+      const headers = getAuthHeaders();
       const response = await fetch(`${API_URL}/prestamos/${prestamo.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify({
           ...prestamo,
           estado: nuevoEstado
@@ -340,6 +344,7 @@ function Prestamos() {
           clientes={clientes}
           onClose={handleCloseModal}
           onSave={handleSave}
+          getAuthHeaders={getAuthHeaders}
         />
       )}
     </div>
