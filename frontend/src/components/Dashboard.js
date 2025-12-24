@@ -96,34 +96,65 @@ function Dashboard() {
             </Link>
           </div>
         ) : (
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Monto</th>
-                  <th>Total a Devolver</th>
-                  <th>Vencimiento</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {prestamos.slice(0, 10).map(prestamo => (
-                  <tr key={prestamo.id}>
-                    <td>{prestamo.cliente_nombre}</td>
-                    <td>{formatCurrency(prestamo.monto_prestado)}</td>
-                    <td>{formatCurrency(prestamo.monto_total)}</td>
-                    <td>{new Date(prestamo.fecha_vencimiento).toLocaleDateString('es-AR')}</td>
-                    <td>
-                      <span className={`badge ${prestamo.colorEstado}`}>
-                        {prestamo.estado}
-                      </span>
-                    </td>
+          <>
+            {/* Vista Desktop */}
+            <div className="table-container table-view">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Monto</th>
+                    <th>Total a Devolver</th>
+                    <th>Vencimiento</th>
+                    <th>Estado</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {prestamos.slice(0, 10).map(prestamo => (
+                    <tr key={prestamo.id}>
+                      <td>{prestamo.cliente_nombre}</td>
+                      <td>{formatCurrency(prestamo.monto_prestado)}</td>
+                      <td>{formatCurrency(prestamo.monto_total)}</td>
+                      <td>{new Date(prestamo.fecha_vencimiento).toLocaleDateString('es-AR')}</td>
+                      <td>
+                        <span className={`badge ${prestamo.colorEstado}`}>
+                          {prestamo.estado}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Vista Mobile */}
+            <div className="dashboard-mobile-view">
+              {prestamos.slice(0, 10).map(prestamo => (
+                <div key={prestamo.id} className={`dashboard-mobile-card prestamo-${prestamo.colorEstado}`}>
+                  <div className="dashboard-mobile-header">
+                    <h3>{prestamo.cliente_nombre}</h3>
+                    <span className={`badge ${prestamo.colorEstado}`}>
+                      {prestamo.estado}
+                    </span>
+                  </div>
+                  <div className="dashboard-mobile-body">
+                    <div className="dashboard-mobile-row">
+                      <span>Monto:</span>
+                      <strong>{formatCurrency(prestamo.monto_prestado)}</strong>
+                    </div>
+                    <div className="dashboard-mobile-row">
+                      <span>Total:</span>
+                      <strong className="dashboard-mobile-total">{formatCurrency(prestamo.monto_total)}</strong>
+                    </div>
+                    <div className="dashboard-mobile-row">
+                      <span>Vence:</span>
+                      <span>{new Date(prestamo.fecha_vencimiento).toLocaleDateString('es-AR')}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

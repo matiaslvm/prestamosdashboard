@@ -271,71 +271,136 @@ function Prestamos() {
           )}
         </div>
       ) : (
-        <div className="card">
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Fecha Préstamo</th>
-                  <th>Vencimiento</th>
-                  <th>Monto</th>
-                  <th>Interés</th>
-                  <th>Total</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredAndSortedPrestamos.map(prestamo => (
-                  <tr key={prestamo.id} className={`prestamo-row prestamo-${prestamo.colorEstado}`}>
-                    <td>
-                      <div className="cliente-cell">
-                        <strong>{prestamo.cliente_nombre}</strong>
-                        <small>{prestamo.cliente_telefono}</small>
-                      </div>
-                    </td>
-                    <td>{formatDate(prestamo.fecha_prestamo)}</td>
-                    <td>{formatDate(prestamo.fecha_vencimiento)}</td>
-                    <td>{formatCurrency(prestamo.monto_prestado)}</td>
-                    <td>{prestamo.porcentaje_interes}%</td>
-                    <td><strong>{formatCurrency(prestamo.monto_total)}</strong></td>
-                    <td>
-                      <span className={`badge ${prestamo.colorEstado}`}>
-                        {prestamo.estado}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="table-actions">
-                        <button
-                          className="btn-icon"
-                          onClick={() => handleEdit(prestamo)}
-                          title="Editar"
-                        >
-                          ✏️
-                        </button>
-                        <button
-                          className="btn-icon"
-                          onClick={() => handleToggleEstado(prestamo)}
-                          title={prestamo.estado === 'Pagado' ? 'Marcar como Pendiente' : 'Marcar como Pagado'}
-                        >
-                          {prestamo.estado === 'Pagado' ? '↩️' : '✅'}
-                        </button>
-                        <button
-                          className="btn-icon btn-icon-danger"
-                          onClick={() => handleDelete(prestamo.id)}
-                          title="Eliminar"
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    </td>
+        <>
+          {/* Vista Desktop - Tabla */}
+          <div className="card table-view">
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Fecha Préstamo</th>
+                    <th>Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Interés</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredAndSortedPrestamos.map(prestamo => (
+                    <tr key={prestamo.id} className={`prestamo-row prestamo-${prestamo.colorEstado}`}>
+                      <td>
+                        <div className="cliente-cell">
+                          <strong>{prestamo.cliente_nombre}</strong>
+                          <small>{prestamo.cliente_telefono}</small>
+                        </div>
+                      </td>
+                      <td>{formatDate(prestamo.fecha_prestamo)}</td>
+                      <td>{formatDate(prestamo.fecha_vencimiento)}</td>
+                      <td>{formatCurrency(prestamo.monto_prestado)}</td>
+                      <td>{prestamo.porcentaje_interes}%</td>
+                      <td><strong>{formatCurrency(prestamo.monto_total)}</strong></td>
+                      <td>
+                        <span className={`badge ${prestamo.colorEstado}`}>
+                          {prestamo.estado}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="table-actions">
+                          <button
+                            className="btn-icon"
+                            onClick={() => handleEdit(prestamo)}
+                            title="Editar"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            className="btn-icon"
+                            onClick={() => handleToggleEstado(prestamo)}
+                            title={prestamo.estado === 'Pagado' ? 'Marcar como Pendiente' : 'Marcar como Pagado'}
+                          >
+                            {prestamo.estado === 'Pagado' ? '↩️' : '✅'}
+                          </button>
+                          <button
+                            className="btn-icon btn-icon-danger"
+                            onClick={() => handleDelete(prestamo.id)}
+                            title="Eliminar"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+
+          {/* Vista Mobile - Cards */}
+          <div className="prestamos-mobile-view">
+            {filteredAndSortedPrestamos.map(prestamo => (
+              <div key={prestamo.id} className={`prestamo-mobile-card prestamo-${prestamo.colorEstado}`}>
+                <div className="prestamo-mobile-header">
+                  <div>
+                    <h3 className="prestamo-mobile-cliente">{prestamo.cliente_nombre}</h3>
+                    <p className="prestamo-mobile-telefono">{prestamo.cliente_telefono}</p>
+                  </div>
+                  <span className={`badge ${prestamo.colorEstado}`}>
+                    {prestamo.estado}
+                  </span>
+                </div>
+
+                <div className="prestamo-mobile-body">
+                  <div className="prestamo-mobile-row">
+                    <span className="prestamo-mobile-label">Monto:</span>
+                    <span className="prestamo-mobile-value">{formatCurrency(prestamo.monto_prestado)}</span>
+                  </div>
+                  <div className="prestamo-mobile-row">
+                    <span className="prestamo-mobile-label">Total:</span>
+                    <span className="prestamo-mobile-value prestamo-mobile-total">
+                      {formatCurrency(prestamo.monto_total)}
+                    </span>
+                  </div>
+                  <div className="prestamo-mobile-row">
+                    <span className="prestamo-mobile-label">Interés:</span>
+                    <span className="prestamo-mobile-value">{prestamo.porcentaje_interes}%</span>
+                  </div>
+                  <div className="prestamo-mobile-row">
+                    <span className="prestamo-mobile-label">Vencimiento:</span>
+                    <span className="prestamo-mobile-value">{formatDate(prestamo.fecha_vencimiento)}</span>
+                  </div>
+                </div>
+
+                <div className="prestamo-mobile-actions">
+                  <button
+                    className="btn-icon"
+                    onClick={() => handleEdit(prestamo)}
+                    title="Editar"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    className="btn-icon"
+                    onClick={() => handleToggleEstado(prestamo)}
+                    title={prestamo.estado === 'Pagado' ? 'Marcar como Pendiente' : 'Marcar como Pagado'}
+                  >
+                    {prestamo.estado === 'Pagado' ? '↩️' : '✅'}
+                  </button>
+                  <button
+                    className="btn-icon btn-icon-danger"
+                    onClick={() => handleDelete(prestamo.id)}
+                    title="Eliminar"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {showModal && (

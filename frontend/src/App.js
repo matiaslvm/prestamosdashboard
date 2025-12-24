@@ -5,6 +5,7 @@ import AuthContext from './context/AuthContext';
 import Dashboard from './components/Dashboard';
 import Clientes from './components/Clientes';
 import Prestamos from './components/Prestamos';
+import Calculadora from './components/Calculadora';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
@@ -38,6 +39,12 @@ function Navigation() {
               className={location.pathname === '/prestamos' ? 'nav-link active' : 'nav-link'}
             >
               💵 Préstamos
+            </Link>
+            <Link 
+              to="/calculadora" 
+              className={location.pathname === '/calculadora' ? 'nav-link active' : 'nav-link'}
+            >
+              🧮 Calculadora
             </Link>
             <button 
               onClick={logout}
@@ -83,6 +90,14 @@ function AppContent() {
                 element={
                   <ProtectedRoute>
                     <Prestamos />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/calculadora" 
+                element={
+                  <ProtectedRoute>
+                    <Calculadora />
                   </ProtectedRoute>
                 } 
               />

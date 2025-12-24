@@ -39,9 +39,85 @@
   color: #666;
 }
 
+/* Vista Mobile Dashboard */
+.dashboard-mobile-view {
+  display: none;
+}
+
+.dashboard-mobile-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #ddd;
+}
+
+.dashboard-mobile-card.prestamo-pagado {
+  border-left-color: #4CAF50;
+  background: #f1f8f4;
+}
+
+.dashboard-mobile-card.prestamo-vencido {
+  border-left-color: #f44336;
+  background: #ffebee;
+}
+
+.dashboard-mobile-card.prestamo-por-vencer {
+  border-left-color: #ff9800;
+  background: #fff3e0;
+}
+
+.dashboard-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.dashboard-mobile-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.dashboard-mobile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dashboard-mobile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.dashboard-mobile-row span:first-child {
+  color: #666;
+  font-weight: 600;
+}
+
+.dashboard-mobile-total {
+  color: #2196F3;
+  font-size: 1.1rem;
+}
+
 @media (max-width: 768px) {
   .page-title {
     font-size: 1.5rem;
+  }
+
+  .table-view {
+    display: none;
+  }
+
+  .dashboard-mobile-view {
+    display: block;
   }
 }
 
