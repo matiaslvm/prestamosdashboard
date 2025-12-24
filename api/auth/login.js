@@ -32,12 +32,27 @@ async function handler(req, res) {
         .eq('username', username)
         .single();
 
-      if (error || !usuario) {
+      // Logging para debug (remover en producción)
+      console.log('Login attempt:', { username, usuarioFound: !!usuario, error: error?.message });
+
+      if (error) {
+        console.error('Error buscando usuario:', error);
+        // Si es error de "no encontrado", retornar mensaje genérico
+        if (error.code === 'PGRST116') {
+          return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+        }
+        return res.status(500).json({ error: 'Error al buscar usuario' });
+      }
+
+      if (!usuario) {
+        console.log('Usuario no encontrado:', username);
         return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
       }
 
       // Verificar contraseña
+      console.log('Comparando contraseña para usuario:', usuario.username);
       const passwordMatch = await bcrypt.compare(password, usuario.password_hash);
+      console.log('Password match:', passwordMatch);
       
       if (!passwordMatch) {
         return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
